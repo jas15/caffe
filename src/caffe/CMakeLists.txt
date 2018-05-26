@@ -21,6 +21,11 @@ if(HAVE_CUDA)
 endif()
 
 add_library(caffe ${srcs})
+target_include_directories(caffe PUBLIC
+                                 $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+                                 $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+)
+
 caffe_default_properties(caffe)
 target_link_libraries(caffe ${Caffe_LINKER_LIBS})
 target_include_directories(caffe ${Caffe_INCLUDE_DIRS}

@@ -1,13 +1,18 @@
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 3.0.2)
 if(POLICY CMP0046)
   cmake_policy(SET CMP0046 NEW)
 endif()
 if(POLICY CMP0054)
   cmake_policy(SET CMP0054 NEW)
 endif()
+if(POLICY CMP0007)
+  cmake_policy(SET CMP0007 NEW)
+endif()
 
 # ---[ Caffe project
 project(Caffe C CXX)
+
+set(DCUDA_USE_STATIC_CUDA_RUNTIME OFF)
 
 # ---[ Caffe version
 set(CAFFE_TARGET_VERSION "1.0.0" CACHE STRING "Caffe logical version")
@@ -31,19 +36,20 @@ caffe_option(CPU_ONLY  "Build Caffe without CUDA support" OFF) # TODO: rename to
 caffe_option(USE_CUDNN "Build Caffe with cuDNN library support" ON IF NOT CPU_ONLY)
 caffe_option(USE_NCCL "Build Caffe with NCCL library support" OFF)
 caffe_option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-caffe_option(BUILD_python "Build Python wrapper" ON)
+caffe_option(BUILD_python "Build Python wrapper" OFF)
 set(python_version "2" CACHE STRING "Specify which Python version to use")
 caffe_option(BUILD_matlab "Build Matlab wrapper" OFF IF UNIX OR APPLE)
-caffe_option(BUILD_docs   "Build documentation" ON IF UNIX OR APPLE)
-caffe_option(BUILD_python_layer "Build the Caffe Python layer" ON)
+caffe_option(BUILD_docs   "Build documentation" OFF IF UNIX OR APPLE)
+caffe_option(BUILD_python_layer "Build the Caffe Python layer" OFF)
 caffe_option(USE_OPENCV "Build with OpenCV support" ON)
-caffe_option(USE_LEVELDB "Build with levelDB" ON)
-caffe_option(USE_LMDB "Build with lmdb" ON)
+caffe_option(USE_LEVELDB "Build with levelDB" OFF)
+caffe_option(USE_LMDB "Build with lmdb" OFF)
 caffe_option(ALLOW_LMDB_NOLOCK "Allow MDB_NOLOCK when reading LMDB files (only if necessary)" OFF)
 caffe_option(USE_OPENMP "Link with OpenMP (when your BLAS wants OpenMP and you get linker errors)" OFF)
 
 # ---[ Dependencies
 include(cmake/Dependencies.cmake)
+set(CUDA_HOST_COMPILER gcc-5)
 
 # ---[ Flags
 if(UNIX OR APPLE)
@@ -89,11 +95,11 @@ endif()
 # ---[ Subdirectories
 add_subdirectory(src/gtest)
 add_subdirectory(src/caffe)
-add_subdirectory(tools)
-add_subdirectory(examples)
-add_subdirectory(python)
-add_subdirectory(matlab)
-add_subdirectory(docs)
+#add_subdirectory(tools)
+#add_subdirectory(examples)
+#add_subdirectory(python)
+#add_subdirectory(matlab)
+#add_subdirectory(docs)
 
 # ---[ Linter target
 add_custom_target(lint COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/lint.cmake)
